@@ -1,0 +1,109 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.file-upload {
+  width: 100%;
+  max-width: 600px;
+  min-height: 200px;
+  border: 3px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+}
+
+.file-upload.drag-active {
+  border-color: #646cff;
+  background-color: #e8f0ff;
+}
+
+.file-upload-label {
+  cursor: pointer;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.upload-icon {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.file-upload-label p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.upload-hint {
+  font-size: 0.9rem !important;
+  color: #666 !important;
+  font-style: italic;
+}
+
+.file-info {
+  width: 100%;
+  max-width: 600px;
+  padding: 1.5rem;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  border: 2px solid #646cff;
+  text-align: left;
+}
+
+.file-info p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
