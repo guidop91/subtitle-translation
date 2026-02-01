@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
-function FileUploadInput() {
-  const [file, setFile] = useState<File | null>(null)
+function FileUploadInput({ file, onFileChange }: {
+  onFileChange: (file: File | null) => void
+  file: File | null
+}) {
   const [dragActive, setDragActive] = useState(false)
 
   const handleDrag = (e: React.DragEvent) => {
@@ -20,14 +22,14 @@ function FileUploadInput() {
     setDragActive(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0])
+      onFileChange(e.dataTransfer.files[0])
     }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
+      onFileChange(e.target.files[0])
     }
   }
   return (
