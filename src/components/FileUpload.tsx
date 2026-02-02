@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-function FileUploadInput({ file, onFileChange }: {
+function FileUploadInput({ file, onFileChange, onContentRead }: {
   onFileChange: (file: File | null) => void
+  onContentRead: (content: string) => void
   file: File | null
 }) {
   const [dragActive, setDragActive] = useState(false)
@@ -22,15 +23,31 @@ function FileUploadInput({ file, onFileChange }: {
     setDragActive(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      onFileChange(e.dataTransfer.files[0])
+      const droppedFile = e.dataTransfer.files[0]
+      onFileChange(droppedFile)
+      readFileContent(droppedFile)
     }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     if (e.target.files && e.target.files[0]) {
-      onFileChange(e.target.files[0])
+      const selectedFile = e.target.files[0]
+      onFileChange(selectedFile)
+      readFileContent(selectedFile)
     }
+  }
+
+  const readFileContent = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const content = e.target?.result as string
+      onContentRead(content)
+    }
+    reader.onerror = () => {
+      console.error('Error reading file')
+    }
+    reader.readAsText(file)
   }
   return (
     <>
