@@ -1,40 +1,15 @@
-import { Document, Packer, Paragraph, TextRun } from "docx";
-
-function DocumentTransform ({ content }: { content: string }) {
-  const downloadAsDocx = async () => {
-    const doc = new Document({
-      sections: [
-        {
-          properties: {},
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: content,
-                  size: 24,
-                }),
-              ],
-            }),
-          ],
-        },
-      ],
-    });
-
-    const blob = await Packer.toBlob(doc);
-    const url = window.URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "subtitle.docx";
-    anchor.click();
-    window.URL.revokeObjectURL(url);
+function DocumentTransform ({ file }: { file: File | null }) {
+  const translateDoc = async () => {
+    // Send file to the backend for translation
+    // Add polling for checking translation status
+    // Download file when done
   };
 
   return (
     <>
-      {content && (
+      {file && (
         <div>
-          <p>File content loaded: {content.slice(0, 100)}...</p>
-          <button onClick={downloadAsDocx}>Descargar documento Word</button>
+          <button onClick={translateDoc}>Traducir y descargar</button>
         </div>
       )}
     </>

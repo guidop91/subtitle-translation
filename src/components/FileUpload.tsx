@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-function FileUploadInput({ file, onFileChange, onContentRead }: {
+function FileUploadInput({ file, onFileChange }: {
   onFileChange: (file: File | null) => void
-  onContentRead: (content: string) => void
   file: File | null
 }) {
   const [dragActive, setDragActive] = useState(false)
@@ -24,8 +23,8 @@ function FileUploadInput({ file, onFileChange, onContentRead }: {
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0]
+      console.log(droppedFile)
       onFileChange(droppedFile)
-      readFileContent(droppedFile)
     }
   }
 
@@ -34,21 +33,9 @@ function FileUploadInput({ file, onFileChange, onContentRead }: {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0]
       onFileChange(selectedFile)
-      readFileContent(selectedFile)
     }
   }
 
-  const readFileContent = (file: File) => {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const content = e.target?.result as string
-      onContentRead(content)
-    }
-    reader.onerror = () => {
-      console.error('Error reading file')
-    }
-    reader.readAsText(file)
-  }
   return (
     <>
       <div
@@ -82,9 +69,6 @@ function FileUploadInput({ file, onFileChange, onContentRead }: {
           </p>
           <p>
             <strong>Tamaño:</strong> {(file.size / 1024).toFixed(2)} KB
-          </p>
-          <p>
-            <strong>Tipo:</strong> {file.type || 'Desconocido'}
           </p>
         </div>
       )}
