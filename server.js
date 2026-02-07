@@ -100,25 +100,25 @@ app.get('/api/languages', async (_req, res) => {
 });
 
 app.post('/api/translate-document', upload.single('document'), async (req, res) => {
+  if (!process.env.DEEPL_API_KEY) {
+    return res.status(500).json({ error: 'DeepL API key not configured' });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'No document uploaded' });
+  }
+
+  const { targetLang = 'ES' } = req.body;
+
+  // Save buffer to temp file first
+  const tempInputPath = path.join(tempDir, `input-${Date.now()}-${req.file.originalname}`);
+  fs.writeFileSync(tempInputPath, req.file.buffer);
+
+  // Define output path
+  const outputFilename = `translated-${Date.now()}-${req.file.originalname}`;
+  const outputPath = path.join(outputDir, outputFilename);
+
   try {
-    if (!process.env.DEEPL_API_KEY) {
-      return res.status(500).json({ error: 'DeepL API key not configured' });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({ error: 'No document uploaded' });
-    }
-
-    const { targetLang = 'ES' } = req.body;
-
-    // Save buffer to temp file first
-    const tempInputPath = path.join(tempDir, `input-${Date.now()}-${req.file.originalname}`);
-    fs.writeFileSync(tempInputPath, req.file.buffer);
-
-    // Define output path
-    const outputFilename = `translated-${Date.now()}-${req.file.originalname}`;
-    const outputPath = path.join(outputDir, outputFilename);
-
     // Translate document using file path
     const result = await translator.translateDocument(
       tempInputPath,
