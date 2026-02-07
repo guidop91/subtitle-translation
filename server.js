@@ -99,6 +99,7 @@ app.get('/api/languages', async (_req, res) => {
   }
 });
 
+// TODO: Fix response to the frontend
 app.post('/api/translate-document', upload.single('document'), async (req, res) => {
   if (!process.env.DEEPL_API_KEY) {
     return res.status(500).json({ error: 'DeepL API key not configured' });
