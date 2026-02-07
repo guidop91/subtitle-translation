@@ -48,7 +48,7 @@ function FileUploadInput({ file, onFileChange }: {
         <input
           type="file"
           id="file-upload"
-          accept=".srt,.vtt,.sub,.ass"
+          accept=".srt,.vtt,.sub,.ass, .txt"
           onChange={handleChange}
           style={{ display: 'none' }}
         />

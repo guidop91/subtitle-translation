@@ -1,8 +1,12 @@
 function DocumentTransform ({ file }: { file: File | null }) {
   const translateDoc = async () => {
-    // Send file to the backend for translation
-    // Add polling for checking translation status
-    // Download file when done
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('document', file);
+    fetch('http://localhost:3001/api/translate-document', {
+      method: 'POST',
+      body: formData
+    })
   };
 
   return (

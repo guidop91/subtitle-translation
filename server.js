@@ -2,13 +2,36 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { DeepLClient } from 'deepl-node';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT = 3001;
+const upload = multer({ storage: multer.memoryStorage() });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Ensure output directory exists
+const outputDir = path.join(__dirname, 'translated-docs');
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// Ensure temp directory exists
+const tempDir = path.join(__dirname, 'temp-uploads');
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
+// Serve translated documents
+app.use('/translated-docs', express.static(outputDir));
 
 // Initialize DeepL translator
 const translator = new DeepLClient(process.env.DEEPL_API_KEY);
@@ -76,13 +99,50 @@ app.get('/api/languages', async (_req, res) => {
   }
 });
 
-app.post('api/translate-document', async (req, res) => {
-  if (!process.env.DEEPL_API_KEY) {
-    return res.status(500).json({ error: 'DeepL API key not configured' });
-  }
+app.post('/api/translate-document', upload.single('document'), async (req, res) => {
+  try {
+    if (!process.env.DEEPL_API_KEY) {
+      return res.status(500).json({ error: 'DeepL API key not configured' });
+    }
 
-  
-})
+    if (!req.file) {
+      return res.status(400).json({ error: 'No document uploaded' });
+    }
+
+    const { targetLang = 'ES' } = req.body;
+
+    // Save buffer to temp file first
+    const tempInputPath = path.join(tempDir, `input-${Date.now()}-${req.file.originalname}`);
+    fs.writeFileSync(tempInputPath, req.file.buffer);
+
+    // Define output path
+    const outputFilename = `translated-${Date.now()}-${req.file.originalname}`;
+    const outputPath = path.join(outputDir, outputFilename);
+
+    // Translate document using file path
+    const result = await translator.translateDocument(
+      tempInputPath,
+      outputPath,
+      null,
+      targetLang
+    );
+
+    // Clean up temp input file
+    fs.unlinkSync(tempInputPath);
+
+    res.json({
+      message: 'Document translated successfully',
+      outputPath: `/translated-docs/${outputFilename}`,
+      documentHandle: result
+    });
+  } catch (error) {
+    console.error('Document translation error:', error);
+    res.status(500).json({
+      error: 'Document translation failed',
+      message: error.message
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
