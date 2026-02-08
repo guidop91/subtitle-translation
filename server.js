@@ -99,7 +99,6 @@ app.get('/api/languages', async (_req, res) => {
   }
 });
 
-// TODO: Fix response to the frontend
 app.post('/api/translate-document', upload.single('document'), async (req, res) => {
   if (!process.env.DEEPL_API_KEY) {
     return res.status(500).json({ error: 'DeepL API key not configured' });
@@ -121,7 +120,7 @@ app.post('/api/translate-document', upload.single('document'), async (req, res) 
 
   try {
     // Translate document using file path
-    const result = await translator.translateDocument(
+    await translator.translateDocument(
       tempInputPath,
       outputPath,
       null,
@@ -132,14 +131,13 @@ app.post('/api/translate-document', upload.single('document'), async (req, res) 
     fs.unlinkSync(tempInputPath);
 
     res.json({
-      message: 'Document translated successfully',
+      message: 'El documento fue traducido muy bien.',
       outputPath: `/translated-docs/${outputFilename}`,
-      documentHandle: result
     });
   } catch (error) {
-    console.error('Document translation error:', error);
+    console.error('Error al traducir el documento:', error);
     res.status(500).json({
-      error: 'Document translation failed',
+      error: 'Falló la traducción del documento',
       message: error.message
     });
   }
