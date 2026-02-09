@@ -1,3 +1,3 @@
+- Fix aggregation and translation and splitting.
 - Add loading screen when waiting for translation
 - Notify when download is ready with a toast or something
-- Allow for multiple file inputs, aggregation and translation
