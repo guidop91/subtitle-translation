@@ -1,15 +1,26 @@
+import { useState, useEffect } from 'react'
 import './App.css'
 import FileUploadInput from './components/FileUpload'
 import DocumentTransform from './components/DocumentTransform'
-import { useState } from 'react'
+import { aggregateFiles } from './utils/aggregateFiles'
 
 function App() {
-  const [file, setFile] = useState<File | null>(null)
+  const [files, setFiles] = useState<File[]>([])
+  const [aggregatedFile, setAggregatedFile] = useState<File | null>(null)
+
+  useEffect(() => {
+    async function updateAggregatedFile() {
+      const result = await aggregateFiles(files);
+      setAggregatedFile(result);
+    }
+    updateAggregatedFile();
+  }, [files])
+
   return (
     <div className="app-container">
-      <h1>Arrastra o carga el subtítulo en inglés</h1>
-      <FileUploadInput file={file} onFileChange={setFile} />
-      <DocumentTransform file={file} />
+      <h1>Arrastra o carga los subtítulos en inglés</h1>
+      <FileUploadInput files={files} onFilesChange={setFiles} />
+      <DocumentTransform file={aggregatedFile} />
     </div>
   )
 }

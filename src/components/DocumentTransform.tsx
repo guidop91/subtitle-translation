@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { splitTranslatedContent } from "../utils/splitFiles";
 
 function DocumentTransform ({ file }: { file: File | null }) {
   const [error, setError] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [translatedFiles, setTranslatedFiles] = useState<File[]>([]);
 
   const translateDoc = async () => {
+    console.log(file);
     if (!file) return;
-    setDownloadUrl(null);
+    setTranslatedFiles([]);
     setError(null);
 
     const formData = new FormData();
@@ -25,9 +27,14 @@ function DocumentTransform ({ file }: { file: File | null }) {
       return;
     }
 
-    // Create full URL for the translated file
+    // Fetch the translated file content
     const fullUrl = `http://localhost:3001${resJson.outputPath}`;
-    setDownloadUrl(fullUrl);
+    const fileResponse = await fetch(fullUrl);
+    const content = await fileResponse.text();
+
+    // Split the translated content into individual files
+    const files = splitTranslatedContent(content);
+    setTranslatedFiles(files);
   };
 
   return (
@@ -37,11 +44,19 @@ function DocumentTransform ({ file }: { file: File | null }) {
           <button onClick={translateDoc}>Traducir archivo</button>
         </div>
       )}
-      {downloadUrl && (
+      {translatedFiles.length > 0 && (
         <div>
-          <a href={downloadUrl} download={file?.name.replace(/\.[^/.]+$/, '') + '-translated.srt'}>
-            Descargar el archivo traducido
-          </a>
+          <h3>Archivos traducidos:</h3>
+          {translatedFiles.map((translatedFile, index) => {
+            const url = URL.createObjectURL(translatedFile);
+            return (
+              <div key={index}>
+                <a href={url} download={translatedFile.name}>
+                  Descargar {translatedFile.name}
+                </a>
+              </div>
+            );
+          })}
         </div>
       )}
       {error && (

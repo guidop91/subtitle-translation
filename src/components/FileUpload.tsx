@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-function FileUploadInput({ file, onFileChange }: {
-  onFileChange: (file: File | null) => void
-  file: File | null
+function FileUploadInput({ files, onFilesChange }: {
+  onFilesChange: (files: File[]) => void
+  files: File[]
 }) {
   const [dragActive, setDragActive] = useState(false)
 
@@ -21,18 +21,17 @@ function FileUploadInput({ file, onFileChange }: {
     e.stopPropagation()
     setDragActive(false)
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0]
-      console.log(droppedFile)
-      onFileChange(droppedFile)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const droppedFiles = Array.from(e.dataTransfer.files)
+      onFilesChange(droppedFiles)
     }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0]
-      onFileChange(selectedFile)
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFiles = Array.from(e.target.files)
+      onFilesChange(selectedFiles)
     }
   }
 
@@ -50,26 +49,32 @@ function FileUploadInput({ file, onFileChange }: {
           id="file-upload"
           accept=".srt,.vtt,.sub,.ass, .txt"
           onChange={handleChange}
+          multiple
           style={{ display: 'none' }}
         />
         <label htmlFor="file-upload" className="file-upload-label">
           <div className="upload-icon">📁</div>
           <p>
-            {file
-              ? file.name
-              : 'Arrastra tu archivo aquí o haz clic para seleccionar'}
+            {files.length > 0
+              ? `${files.length} archivo${files.length > 1 ? 's' : ''} seleccionado${files.length > 1 ? 's' : ''}`
+              : 'Arrastra tus archivos aquí o haz clic para seleccionar'}
           </p>
           <p className="upload-hint">Formatos soportados: SRT, VTT, SUB, ASS</p>
         </label>
       </div>
-      {file && (
+      {files.length > 0 && (
         <div className="file-info">
-          <p>
-            <strong>Archivo seleccionado:</strong> {file.name}
-          </p>
-          <p>
-            <strong>Tamaño:</strong> {(file.size / 1024).toFixed(2)} KB
-          </p>
+          <h3>Archivos seleccionados:</h3>
+          {files.map((file, index) => (
+            <div key={index} className="file-item">
+              <p>
+                <strong>{index + 1}. {file.name}</strong>
+              </p>
+              <p>
+                Tamaño: {(file.size / 1024).toFixed(2)} KB
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </>
