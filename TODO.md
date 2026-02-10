@@ -1,3 +1,3 @@
-- Fix aggregation and translation and splitting.
+- Aggregation and splitting doesn't work, try new approach.
 - Add loading screen when waiting for translation
 - Notify when download is ready with a toast or something

@@ -6,7 +6,6 @@ function DocumentTransform ({ file }: { file: File | null }) {
   const [translatedFiles, setTranslatedFiles] = useState<File[]>([]);
 
   const translateDoc = async () => {
-    console.log(file);
     if (!file) return;
     setTranslatedFiles([]);
     setError(null);
