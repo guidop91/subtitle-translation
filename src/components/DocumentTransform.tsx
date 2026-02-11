@@ -1,46 +1,85 @@
 import { useState } from "react";
-import { splitTranslatedContent } from "../utils/splitFiles";
 
-function DocumentTransform ({ file }: { file: File | null }) {
+function DocumentTransform ({ files }: { files: File[] }) {
   const [error, setError] = useState<string | null>(null);
   const [translatedFiles, setTranslatedFiles] = useState<File[]>([]);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [currentFileName, setCurrentFileName] = useState<string | null>(null);
 
   const translateDoc = async () => {
-    if (!file) return;
+    if (files.length === 0) return;
     setTranslatedFiles([]);
     setError(null);
+    setIsTranslating(true);
 
-    const formData = new FormData();
-    formData.append('document', file);
-    formData.append('targetLang', 'ES');
+    const results: File[] = [];
 
-    const response = await fetch('http://localhost:3001/api/translate-document', {
-      method: 'POST',
-      body: formData
-    })
+    // Process each file sequentially
+    for (const file of files) {
+      setCurrentFileName(file.name);
 
-    const resJson = await response.json();
-    if (!response.ok) {
-      console.error('Error al traducir el documento', resJson.error);
-      setError(resJson.error);
-      return;
+      try {
+        const formData = new FormData();
+        formData.append('document', file);
+        formData.append('targetLang', 'ES');
+
+        const response = await fetch('http://localhost:3001/api/translate-document', {
+          method: 'POST',
+          body: formData
+        });
+
+        const resJson = await response.json();
+        if (!response.ok) {
+          throw new Error(resJson.error || `Failed to translate ${file.name}`);
+        }
+
+        // Fetch the translated file content
+        const fullUrl = `http://localhost:3001${resJson.outputPath}`;
+        const fileResponse = await fetch(fullUrl);
+
+        if (!fileResponse.ok) {
+          throw new Error(`Failed to download translated file for ${file.name}`);
+        }
+
+        const content = await fileResponse.text();
+
+        // Create translated file with "-translated" suffix
+        const lastDotIndex = file.name.lastIndexOf('.');
+        const nameWithoutExt = lastDotIndex > 0 ? file.name.substring(0, lastDotIndex) : file.name;
+        const extension = lastDotIndex > 0 ? file.name.substring(lastDotIndex) : '';
+        const translatedName = `${nameWithoutExt}-translated${extension}`;
+
+        const translatedFile = new File([content], translatedName, {
+          type: 'text/plain'
+        });
+
+        results.push(translatedFile);
+      } catch (err) {
+        console.error(`Error translating ${file.name}:`, err);
+        setError(`Error translating ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        setIsTranslating(false);
+        setCurrentFileName(null);
+        return;
+      }
     }
 
-    // Fetch the translated file content
-    const fullUrl = `http://localhost:3001${resJson.outputPath}`;
-    const fileResponse = await fetch(fullUrl);
-    const content = await fileResponse.text();
-
-    // Split the translated content into individual files
-    const files = splitTranslatedContent(content);
-    setTranslatedFiles(files);
+    setTranslatedFiles(results);
+    setIsTranslating(false);
+    setCurrentFileName(null);
   };
 
   return (
     <>
-      {file && (
+      {files.length > 0 && (
         <div>
-          <button onClick={translateDoc}>Traducir archivo</button>
+          <button onClick={translateDoc} disabled={isTranslating}>
+            {isTranslating ? 'Traduciendo...' : 'Traducir archivos'}
+          </button>
+          {isTranslating && currentFileName && (
+            <p style={{fontSize: '0.9em', color: '#666'}}>
+              Traduciendo: {currentFileName}
+            </p>
+          )}
         </div>
       )}
       {translatedFiles.length > 0 && (
