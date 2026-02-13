@@ -1,17 +1,26 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import './App.css'
-import FileUploadInput from './components/FileUpload'
-import DocumentTransform from './components/DocumentTransform'
+import HomePage from './pages/HomePage'
+import AggregatePage from './pages/AggregatePage'
+import SplitPage from './pages/SplitPage'
 
 function App() {
-  const [files, setFiles] = useState<File[]>([])
-
   return (
-    <div className="app-container">
-      <h1>Arrastra o carga los subtítulos en inglés</h1>
-      <FileUploadInput files={files} onFilesChange={setFiles} />
-      <DocumentTransform files={files} />
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <nav className="nav-bar">
+          <NavLink to="/" className="nav-link">Traducir</NavLink>
+          <NavLink to="/aggregate" className="nav-link">Agregar</NavLink>
+          <NavLink to="/split" className="nav-link">Dividir</NavLink>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/aggregate" element={<AggregatePage />} />
+          <Route path="/split" element={<SplitPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 

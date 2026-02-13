@@ -6,6 +6,8 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import aggregateRouter from './routes/aggregate.js';
+import splitRouter from './routes/split.js';
 
 const app = express();
 const PORT = 3001;
@@ -32,6 +34,10 @@ app.use(express.json({ limit: '10mb' }));
 
 // Serve translated documents
 app.use('/translated-docs', express.static(outputDir));
+
+// Import and use routes
+app.use(aggregateRouter);
+app.use(splitRouter);
 
 // Initialize DeepL translator
 const translator = new DeepLClient(process.env.DEEPL_API_KEY);
