@@ -3,7 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Document, Paragraph, HeadingLevel } from 'docx';
+import { Document, Paragraph, HeadingLevel, Packer } from 'docx';
 import { generateMarker } from '../utils/constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -134,7 +134,6 @@ router.post('/api/aggregate-documents', upload.array('documents', 50), async (re
     const outputPath = path.join(outputDir, outputFilename);
 
     // Import the Packer dynamically
-    const { Packer } = await import('docx');
     const buffer = await Packer.toBuffer(doc);
     fs.writeFileSync(outputPath, buffer);
 

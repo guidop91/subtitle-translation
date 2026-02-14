@@ -1,5 +1,4 @@
-import mammoth from 'mammoth';
-import fs from 'fs';
+import officeParser from 'officeparser';
 
 /**
  * Extract raw text from a DOCX file, preserving line structure
@@ -8,22 +7,33 @@ import fs from 'fs';
  */
 export async function extractRawTextFromDocx(filePath) {
   try {
-    const buffer = fs.readFileSync(filePath);
+    // Use officeparser to extract text
+    const ast = await officeParser.parseOffice(filePath);
 
-    // Use raw text extraction
-    const result = await mammoth.extractRawText({ buffer });
+    // Process content manually to preserve empty paragraphs
+    const lines = [];
 
-    let text = result.value;
+    for (const node of ast.content) {
+      // Get text from each paragraph/heading
+      let nodeText = '';
 
-    // Mammoth adds an extra newline for each paragraph (including empty ones)
-    // This causes our single blank lines to become double blank lines
-    // Fix: Replace triple newlines (which were originally single blank lines)
-    // with double newlines
-    // Original: "1\n\n00:00:"  → After mammoth: "1\n\n\n00:00:"
-    // We want to remove ONE of the extra newlines
-    text = text.replace(/\n\n\n/g, '\n\n');
+      if (node.children) {
+        // Concatenate all text from children
+        for (const child of node.children) {
+          if (child.text !== undefined) {
+            nodeText += child.text;
+          }
+        }
+      } else if (node.text !== undefined) {
+        nodeText = node.text;
+      }
 
-    return text;
+      // Add the line (empty or not)
+      lines.push(nodeText);
+    }
+
+    // Join lines with newlines
+    return lines.join('\n');
   } catch (error) {
     throw new Error(`Failed to read DOCX file: ${error.message}`);
   }
