@@ -3,6 +3,8 @@ import './App.css'
 import HomePage from './pages/HomePage'
 import AggregatePage from './pages/AggregatePage'
 import SplitPage from './pages/SplitPage'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   return (
@@ -19,6 +21,19 @@ function App() {
           <Route path="/aggregate" element={<AggregatePage />} />
           <Route path="/split" element={<SplitPage />} />
         </Routes>
+
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </div>
     </BrowserRouter>
   )

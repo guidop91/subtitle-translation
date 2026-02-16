@@ -1,9 +1,35 @@
 import { useState } from 'react';
 
-function FileUploadInput({ files, onFilesChange }: {
-  onFilesChange: (files: File[]) => void
-  files: File[]
-}) {
+interface FileUploadPropsBase {
+  accept?: string
+  id?: string
+  icon?: string
+  hint?: string
+}
+
+interface FileUploadPropsSingle extends FileUploadPropsBase {
+  multiple: false
+  value: File | null
+  onChange: (file: File | null) => void
+}
+
+interface FileUploadPropsMultiple extends FileUploadPropsBase {
+  multiple: true
+  value: File[]
+  onChange: (files: File[]) => void
+}
+
+type FileUploadProps = FileUploadPropsSingle | FileUploadPropsMultiple
+
+function FileUpload({
+  value,
+  onChange,
+  multiple,
+  accept = '.srt,.vtt,.sub,.ass,.txt',
+  id = 'file-upload',
+  icon = '📁',
+  hint
+}: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false)
 
   const handleDrag = (e: React.DragEvent) => {
@@ -22,16 +48,41 @@ function FileUploadInput({ files, onFilesChange }: {
     setDragActive(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const droppedFiles = Array.from(e.dataTransfer.files)
-      onFilesChange(droppedFiles)
+      if (multiple) {
+        const droppedFiles = Array.from(e.dataTransfer.files)
+        onChange(droppedFiles)
+      } else {
+        onChange(e.dataTransfer.files[0])
+      }
     }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     if (e.target.files && e.target.files.length > 0) {
-      const selectedFiles = Array.from(e.target.files)
-      onFilesChange(selectedFiles)
+      if (multiple) {
+        const selectedFiles = Array.from(e.target.files)
+        onChange(selectedFiles)
+      } else {
+        onChange(e.target.files[0])
+      }
+    }
+  }
+
+  // Determine label text based on mode and selection
+  const getLabelText = () => {
+    if (multiple) {
+      const files = value as File[] | null
+      if (files && files.length > 0) {
+        return `${files.length} archivo${files.length > 1 ? 's' : ''} seleccionado${files.length > 1 ? 's' : ''}`
+      }
+      return 'Arrastra tus archivos aquí o haz clic para seleccionar'
+    } else {
+      const file = value as File | null
+      if (file) {
+        return file.name
+      }
+      return 'Arrastra tu archivo aquí o haz clic para seleccionar'
     }
   }
 
@@ -46,33 +97,35 @@ function FileUploadInput({ files, onFilesChange }: {
       >
         <input
           type="file"
-          id="file-upload"
-          accept=".srt,.vtt,.sub,.ass, .txt"
+          id={id}
+          accept={accept}
           onChange={handleChange}
-          multiple
+          multiple={multiple}
           style={{ display: 'none' }}
         />
-        <label htmlFor="file-upload" className="file-upload-label">
-          <div className="upload-icon">📁</div>
-          <p>
-            {files.length > 0
-              ? `${files.length} archivo${files.length > 1 ? 's' : ''} seleccionado${files.length > 1 ? 's' : ''}`
-              : 'Arrastra tus archivos aquí o haz clic para seleccionar'}
-          </p>
-          <p className="upload-hint">Formatos soportados: SRT, VTT, SUB, ASS</p>
+        <label htmlFor={id} className="file-upload-label">
+          <div className="upload-icon">{icon}</div>
+          <p>{getLabelText()}</p>
+          {hint && <p className="upload-hint">{hint}</p>}
         </label>
       </div>
-      {files.length > 0 && (
+
+      {/* File info display - single file */}
+      {!multiple && value && (
+        <div className="file-info">
+          <p><strong>Archivo seleccionado:</strong> {(value as File).name}</p>
+          <p>Tamaño: {((value as File).size / 1024).toFixed(2)} KB</p>
+        </div>
+      )}
+
+      {/* File info display - multiple files */}
+      {multiple && value && (value as File[]).length > 0 && (
         <div className="file-info">
           <h3>Archivos seleccionados:</h3>
-          {files.map((file, index) => (
+          {(value as File[]).map((file, index) => (
             <div key={index} className="file-item">
-              <p>
-                <strong>{index + 1}. {file.name}</strong>
-              </p>
-              <p>
-                Tamaño: {(file.size / 1024).toFixed(2)} KB
-              </p>
+              <p><strong>{index + 1}. {file.name}</strong></p>
+              <p>Tamaño: {(file.size / 1024).toFixed(2)} KB</p>
             </div>
           ))}
         </div>
@@ -81,4 +134,4 @@ function FileUploadInput({ files, onFilesChange }: {
   );
 }
 
-export default FileUploadInput;
+export default FileUpload;

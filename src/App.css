@@ -195,6 +195,110 @@
   border: 1px solid #ffcdd2;
 }
 
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .file-info {
+    background-color: #2a2a2a;
+    border-color: #646cff;
+  }
+
+  .file-info h3 {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .file-info p {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .file-info p strong {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .file-upload {
+    background-color: #1a1a1a;
+    border-color: #444;
+  }
+
+  .file-upload.drag-active {
+    background-color: #1e1e2e;
+    border-color: #646cff;
+  }
+
+  .file-upload-label p {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .upload-hint {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+
+  .page-description {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .marker-input label {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .marker-input input {
+    background-color: #1a1a1a;
+    border-color: #444;
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .input-hint {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .nav-bar {
+    background-color: #1a1a1a;
+    border-bottom-color: #333;
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .nav-link:hover {
+    background-color: #2a2a2a;
+    color: #646cff;
+  }
+
+  /* Toast notification styles */
+  .Toastify__toast-container {
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .Toastify__toast-theme-colored {
+    background-color: #2a2a2a !important;
+    color: rgba(255, 255, 255, 0.87) !important;
+  }
+
+  .Toastify__toast--success {
+    background-color: #1e3a1e !important;
+  }
+
+  .Toastify__toast--error {
+    background-color: #3a1e1e !important;
+  }
+
+  .Toastify__toast--info {
+    background-color: #1e2a3a !important;
+  }
+
+  .Toastify__progress-bar-theme-colored {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .Toastify__close-button {
+    color: rgba(255, 255, 255, 0.87) !important;
+  }
+
+  .Toastify__close-button:hover {
+    color: #ffffff !important;
+  }
+}
+
 /* Button styles */
 button {
   padding: 0.75rem 2rem;

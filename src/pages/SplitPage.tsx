@@ -1,40 +1,12 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import FileUpload from '../components/FileUpload'
 
 function SplitPage() {
   const [file, setFile] = useState<File | null>(null)
-  const [dragActive, setDragActive] = useState(false)
   const [isSplitting, setIsSplitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
-    }
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const droppedFile = e.dataTransfer.files[0]
-      setFile(droppedFile)
-    }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
-    if (e.target.files && e.target.files.length > 0) {
-      const selectedFile = e.target.files[0]
-      setFile(selectedFile)
-    }
-  }
 
   const splitFile = async () => {
     if (!file) return
@@ -61,9 +33,11 @@ function SplitPage() {
       const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       setDownloadUrl(url)
+      toast.success('¡Documento dividido exitosamente!')
     } catch (err) {
       console.error('Error splitting file:', err)
       setError(err instanceof Error ? err.message : 'Unknown error occurred')
+      toast.error(err instanceof Error ? err.message : 'Error al dividir el documento')
     } finally {
       setIsSplitting(false)
     }
@@ -74,37 +48,15 @@ function SplitPage() {
       <h1>Dividir DOCX en múltiples archivos</h1>
       <p className="page-description">Sube un documento DOCX agregado para recuperarlo en sus archivos originales</p>
 
-      <div
-        className={`file-upload ${dragActive ? 'drag-active' : ''}`}
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-      >
-        <input
-          type="file"
-          id="split-upload"
-          accept=".docx,.txt"
-          onChange={handleChange}
-          style={{ display: 'none' }}
-        />
-        <label htmlFor="split-upload" className="file-upload-label">
-          <div className="upload-icon">📄</div>
-          <p>
-            {file
-              ? file.name
-              : 'Arrastra tu archivo DOCX aquí o haz clic para seleccionar'}
-          </p>
-          <p className="upload-hint">Formatos soportados: DOCX (archivos agregados)</p>
-        </label>
-      </div>
-
-      {file && (
-        <div className="file-info">
-          <p><strong>Archivo seleccionado:</strong> {file.name}</p>
-          <p>Tamaño: {(file.size / 1024).toFixed(2)} KB</p>
-        </div>
-      )}
+      <FileUpload
+        value={file}
+        onChange={setFile}
+        multiple={false}
+        accept=".docx,.txt"
+        id="split-upload"
+        icon="📄"
+        hint="Formatos soportados: DOCX (archivos agregados)"
+      />
 
       {file && (
         <div>

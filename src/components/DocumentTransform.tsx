@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from 'react-toastify';
 
 function DocumentTransform ({ files }: { files: File[] }) {
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +57,9 @@ function DocumentTransform ({ files }: { files: File[] }) {
         results.push(translatedFile);
       } catch (err) {
         console.error(`Error translating ${file.name}:`, err);
-        setError(`Error translating ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        const errorMsg = `Error translating ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`;
+        setError(errorMsg);
+        toast.error(errorMsg);
         setIsTranslating(false);
         setCurrentFileName(null);
         return;
@@ -66,6 +69,7 @@ function DocumentTransform ({ files }: { files: File[] }) {
     setTranslatedFiles(results);
     setIsTranslating(false);
     setCurrentFileName(null);
+    toast.success(`¡${results.length} archivo${results.length > 1 ? 's' : ''} traducido${results.length > 1 ? 's' : ''} exitosamente!`);
   };
 
   return (
