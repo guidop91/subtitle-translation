@@ -5,12 +5,14 @@ import FileUpload from '../components/FileUpload'
 function AggregatePage() {
   const [files, setFiles] = useState<File[]>([])
   const [isAggregating, setIsAggregating] = useState(false)
+  const [hasStartedAggregating, setHasStartedAggregating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
   const aggregateFiles = async () => {
     if (files.length === 0) return
 
+    setHasStartedAggregating(true)
     setIsAggregating(true)
     setError(null)
     setDownloadUrl(null)
@@ -58,9 +60,10 @@ function AggregatePage() {
         id="aggregate-upload"
         icon="📁"
         hint="Formatos soportados: SRT, VTT, SUB, ASS"
+        shouldCollapse={hasStartedAggregating}
       />
 
-      {files.length > 0 && (
+      {files.length > 0 && !hasStartedAggregating && (
         <div>
           <button onClick={aggregateFiles} disabled={isAggregating}>
             {isAggregating ? 'Agregando...' : 'Crear DOCX'}

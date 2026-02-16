@@ -4,6 +4,7 @@ import DocumentTransform from '../components/DocumentTransform'
 
 function HomePage() {
   const [files, setFiles] = useState<File[]>([])
+  const [hasStartedProcessing, setHasStartedProcessing] = useState(false)
 
   return (
     <div className="app-container">
@@ -16,8 +17,9 @@ function HomePage() {
         id="file-upload"
         icon="📁"
         hint="Formatos soportados: SRT, VTT, SUB, ASS"
+        shouldCollapse={hasStartedProcessing}
       />
-      <DocumentTransform files={files} />
+      <DocumentTransform files={files} onProcessingStart={() => setHasStartedProcessing(true)} />
     </div>
   )
 }

@@ -5,6 +5,7 @@ interface FileUploadPropsBase {
   id?: string
   icon?: string
   hint?: string
+  shouldCollapse?: boolean
 }
 
 interface FileUploadPropsSingle extends FileUploadPropsBase {
@@ -28,7 +29,8 @@ function FileUpload({
   accept = '.srt,.vtt,.sub,.ass,.txt',
   id = 'file-upload',
   icon = '📁',
-  hint
+  hint,
+  shouldCollapse = false
 }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false)
 
@@ -87,7 +89,7 @@ function FileUpload({
   }
 
   return (
-    <>
+    <div className={`file-upload-wrapper ${shouldCollapse ? 'collapsing' : ''}`}>
       <div
         className={`file-upload ${dragActive ? 'drag-active' : ''}`}
         onDragEnter={handleDrag}
@@ -112,7 +114,7 @@ function FileUpload({
 
       {/* File info display - single file */}
       {!multiple && value && (
-        <div className="file-info">
+        <div className={`file-info ${shouldCollapse ? 'collapsing' : ''}`}>
           <p><strong>Archivo seleccionado:</strong> {(value as File).name}</p>
           <p>Tamaño: {((value as File).size / 1024).toFixed(2)} KB</p>
         </div>
@@ -120,7 +122,7 @@ function FileUpload({
 
       {/* File info display - multiple files */}
       {multiple && value && (value as File[]).length > 0 && (
-        <div className="file-info">
+        <div className={`file-info ${shouldCollapse ? 'collapsing' : ''}`}>
           <h3>Archivos seleccionados:</h3>
           {(value as File[]).map((file, index) => (
             <div key={index} className="file-item">
@@ -130,7 +132,7 @@ function FileUpload({
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
 

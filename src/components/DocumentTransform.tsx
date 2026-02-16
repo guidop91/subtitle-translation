@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { toast } from 'react-toastify';
 
-function DocumentTransform ({ files }: { files: File[] }) {
+function DocumentTransform ({
+  files,
+  onProcessingStart
+}: {
+  files: File[]
+  onProcessingStart?: () => void
+}) {
   const [error, setError] = useState<string | null>(null);
   const [translatedFiles, setTranslatedFiles] = useState<File[]>([]);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [hasStartedTranslating, setHasStartedTranslating] = useState(false);
   const [currentFileName, setCurrentFileName] = useState<string | null>(null);
 
   const translateDoc = async () => {
@@ -12,6 +19,8 @@ function DocumentTransform ({ files }: { files: File[] }) {
     setTranslatedFiles([]);
     setError(null);
     setIsTranslating(true);
+    setHasStartedTranslating(true);
+    onProcessingStart?.();
 
     const results: File[] = [];
 
@@ -74,7 +83,7 @@ function DocumentTransform ({ files }: { files: File[] }) {
 
   return (
     <>
-      {files.length > 0 && (
+      {files.length > 0 && !hasStartedTranslating && (
         <div>
           <button onClick={translateDoc} disabled={isTranslating}>
             {isTranslating ? 'Traduciendo...' : 'Traducir archivos'}

@@ -5,12 +5,14 @@ import FileUpload from '../components/FileUpload'
 function SplitPage() {
   const [file, setFile] = useState<File | null>(null)
   const [isSplitting, setIsSplitting] = useState(false)
+  const [hasStartedSplitting, setHasStartedSplitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
   const splitFile = async () => {
     if (!file) return
 
+    setHasStartedSplitting(true)
     setIsSplitting(true)
     setError(null)
     setDownloadUrl(null)
@@ -56,9 +58,10 @@ function SplitPage() {
         id="split-upload"
         icon="📄"
         hint="Formatos soportados: DOCX (archivos agregados)"
+        shouldCollapse={hasStartedSplitting}
       />
 
-      {file && (
+      {file && !hasStartedSplitting && (
         <div>
           <button onClick={splitFile} disabled={isSplitting}>
             {isSplitting ? 'Dividiendo...' : 'Dividir documento'}

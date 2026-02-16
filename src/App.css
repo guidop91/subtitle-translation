@@ -72,6 +72,36 @@
   font-size: 1rem;
 }
 
+.file-upload-wrapper {
+  width: 100%;
+  max-width: 600px;
+}
+
+.file-upload-wrapper.collapsing {
+  animation: collapse-vertical 0.8s ease-out forwards;
+  overflow: hidden;
+}
+
+@keyframes collapse-vertical {
+  0% {
+    max-height: 1000px;
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0);
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.file-info.collapsing {
+  animation: collapse-vertical 0.8s ease-out forwards;
+  overflow: hidden;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
