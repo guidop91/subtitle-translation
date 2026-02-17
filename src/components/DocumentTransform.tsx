@@ -10,15 +10,10 @@ function DocumentTransform ({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [translatedFiles, setTranslatedFiles] = useState<File[]>([]);
-  const [isTranslating, setIsTranslating] = useState(false);
   const [hasStartedTranslating, setHasStartedTranslating] = useState(false);
-  const [currentFileName, setCurrentFileName] = useState<string | null>(null);
 
   const translateDoc = async () => {
     if (files.length === 0) return;
-    setTranslatedFiles([]);
-    setError(null);
-    setIsTranslating(true);
     setHasStartedTranslating(true);
     onProcessingStart?.();
 
@@ -26,7 +21,6 @@ function DocumentTransform ({
 
     // Process each file sequentially
     for (const file of files) {
-      setCurrentFileName(file.name);
 
       try {
         const formData = new FormData();
@@ -69,15 +63,11 @@ function DocumentTransform ({
         const errorMsg = `Error translating ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`;
         setError(errorMsg);
         toast.error(errorMsg);
-        setIsTranslating(false);
-        setCurrentFileName(null);
         return;
       }
     }
 
     setTranslatedFiles(results);
-    setIsTranslating(false);
-    setCurrentFileName(null);
     toast.success(`¡${results.length} archivo${results.length > 1 ? 's' : ''} traducido${results.length > 1 ? 's' : ''} exitosamente!`);
   };
 
@@ -85,14 +75,9 @@ function DocumentTransform ({
     <>
       {files.length > 0 && !hasStartedTranslating && (
         <div>
-          <button onClick={translateDoc} disabled={isTranslating}>
-            {isTranslating ? 'Traduciendo...' : 'Traducir archivos'}
+          <button onClick={translateDoc}>
+            Traducir archivos
           </button>
-          {isTranslating && currentFileName && (
-            <p style={{fontSize: '0.9em', color: '#666'}}>
-              Traduciendo: {currentFileName}
-            </p>
-          )}
         </div>
       )}
       {translatedFiles.length > 0 && (

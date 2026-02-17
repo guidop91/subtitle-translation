@@ -4,7 +4,6 @@ import FileUpload from '../components/FileUpload'
 
 function SplitPage() {
   const [file, setFile] = useState<File | null>(null)
-  const [isSplitting, setIsSplitting] = useState(false)
   const [hasStartedSplitting, setHasStartedSplitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
@@ -13,9 +12,7 @@ function SplitPage() {
     if (!file) return
 
     setHasStartedSplitting(true)
-    setIsSplitting(true)
     setError(null)
-    setDownloadUrl(null)
 
     try {
       const formData = new FormData()
@@ -40,8 +37,6 @@ function SplitPage() {
       console.error('Error splitting file:', err)
       setError(err instanceof Error ? err.message : 'Unknown error occurred')
       toast.error(err instanceof Error ? err.message : 'Error al dividir el documento')
-    } finally {
-      setIsSplitting(false)
     }
   }
 
@@ -63,8 +58,8 @@ function SplitPage() {
 
       {file && !hasStartedSplitting && (
         <div>
-          <button onClick={splitFile} disabled={isSplitting}>
-            {isSplitting ? 'Dividiendo...' : 'Dividir documento'}
+          <button onClick={splitFile}>
+            Dividir documento
           </button>
         </div>
       )}

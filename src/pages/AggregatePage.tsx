@@ -4,7 +4,6 @@ import FileUpload from '../components/FileUpload'
 
 function AggregatePage() {
   const [files, setFiles] = useState<File[]>([])
-  const [isAggregating, setIsAggregating] = useState(false)
   const [hasStartedAggregating, setHasStartedAggregating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
@@ -13,9 +12,7 @@ function AggregatePage() {
     if (files.length === 0) return
 
     setHasStartedAggregating(true)
-    setIsAggregating(true)
     setError(null)
-    setDownloadUrl(null)
 
     try {
       const formData = new FormData()
@@ -40,10 +37,8 @@ function AggregatePage() {
       toast.success('¡Documentos agregados exitosamente!')
     } catch (err) {
       console.error('Error aggregating files:', err)
-      setError(err instanceof Error ? err.message : 'Unknown error occurred')
+      setError(err instanceof Error ? err.message : 'Error al agregar los documentos')
       toast.error(err instanceof Error ? err.message : 'Error al agregar los documentos')
-    } finally {
-      setIsAggregating(false)
     }
   }
 
@@ -53,20 +48,20 @@ function AggregatePage() {
       <p className="page-description">Sube múltiples archivos de subtítulos para combinarlos en un solo documento DOCX</p>
 
       <FileUpload
-        value={files}
-        onChange={setFiles}
-        multiple={true}
         accept=".srt,.vtt,.sub,.ass,.txt"
-        id="aggregate-upload"
-        icon="📁"
         hint="Formatos soportados: SRT, VTT, SUB, ASS"
+        icon="📁"
+        id="aggregate-upload"
+        multiple={true}
+        onChange={setFiles}
         shouldCollapse={hasStartedAggregating}
+        value={files}
       />
 
       {files.length > 0 && !hasStartedAggregating && (
         <div>
-          <button onClick={aggregateFiles} disabled={isAggregating}>
-            {isAggregating ? 'Agregando...' : 'Crear DOCX'}
+          <button onClick={aggregateFiles}>
+            Crear DOCX
           </button>
         </div>
       )}

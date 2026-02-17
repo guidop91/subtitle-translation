@@ -1,0 +1,3 @@
+- Add automated tests for frontend
+- Add automated tests for backend
+- Best practices for CSS

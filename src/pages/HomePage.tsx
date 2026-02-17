@@ -10,14 +10,14 @@ function HomePage() {
     <div className="app-container">
       <h1>Arrastra o carga los subtítulos en inglés</h1>
       <FileUpload
-        value={files}
-        onChange={setFiles}
-        multiple={true}
         accept=".srt,.vtt,.sub,.ass, .txt"
-        id="file-upload"
-        icon="📁"
         hint="Formatos soportados: SRT, VTT, SUB, ASS"
+        icon="📁"
+        id="file-upload"
+        multiple={true}
+        onChange={setFiles}
         shouldCollapse={hasStartedProcessing}
+        value={files}
       />
       <DocumentTransform files={files} onProcessingStart={() => setHasStartedProcessing(true)} />
     </div>
