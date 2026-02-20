@@ -75,11 +75,9 @@ router.post(
       } else {
         archive.abort();
         if (!res.headersSent) {
-          return res
-            .status(400)
-            .json({
-              error: 'Unsupported file format. Please use .docx or .txt',
-            });
+          return res.status(400).json({
+            error: 'Unsupported file format. Please use .docx or .txt',
+          });
         }
       }
 
@@ -124,12 +122,10 @@ router.post(
       if (parts.length === 0) {
         archive.abort();
         if (!res.headersSent) {
-          return res
-            .status(400)
-            .json({
-              error:
-                'No files found in document. Make sure the document was created using the aggregate function.',
-            });
+          return res.status(400).json({
+            error:
+              'No files found in document. Make sure the document was created using the aggregate function.',
+          });
         }
       }
 

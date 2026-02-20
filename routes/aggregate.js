@@ -29,12 +29,6 @@ function getFileExtension(filename) {
   return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
 }
 
-// Helper function to get filename without extension
-function getFilenameWithoutExt(filename) {
-  const lastDotIndex = filename.lastIndexOf('.');
-  return lastDotIndex > 0 ? filename.substring(0, lastDotIndex) : filename;
-}
-
 // Helper to read file content based on type
 function readFileContent(file) {
   const ext = getFileExtension(file.originalname);
