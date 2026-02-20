@@ -16,7 +16,7 @@ interface FileUploadPropsSingle extends FileUploadPropsBase {
 
 interface FileUploadPropsMultiple extends FileUploadPropsBase {
   multiple: true
-  value: File[]
+  value: File[] | null
   onChange: (files: File[]) => void
 }
 

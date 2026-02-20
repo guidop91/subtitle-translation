@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+temp-uploads
+translated-docs
+.env
+.env.example
+*.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
