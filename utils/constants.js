@@ -23,10 +23,7 @@ export function generateMarker(filename) {
 export function extractFilenameFromMarker(line) {
   const trimmed = line.trim();
   if (trimmed.startsWith(MARKER_PREFIX) && trimmed.endsWith(MARKER_SUFFIX)) {
-    return trimmed.slice(
-      MARKER_PREFIX.length,
-      -MARKER_SUFFIX.length
-    );
+    return trimmed.slice(MARKER_PREFIX.length, -MARKER_SUFFIX.length);
   }
   return null;
 }

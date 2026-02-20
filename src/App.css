@@ -296,7 +296,10 @@
 
   /* Toast notification styles */
   .Toastify__toast-container {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 
   .Toastify__toast-theme-colored {

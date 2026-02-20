@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import FileUpload from '../components/FileUpload'
-import DocumentTransform from '../components/DocumentTransform'
+import { useState } from 'react';
+import FileUpload from '../components/FileUpload';
+import DocumentTransform from '../components/DocumentTransform';
 
 function HomePage() {
-  const [files, setFiles] = useState<File[]>([])
-  const [hasStartedProcessing, setHasStartedProcessing] = useState(false)
+  const [files, setFiles] = useState<File[]>([]);
+  const [hasStartedProcessing, setHasStartedProcessing] = useState(false);
 
   return (
     <div className="app-container">
@@ -19,9 +19,12 @@ function HomePage() {
         shouldCollapse={hasStartedProcessing}
         value={files}
       />
-      <DocumentTransform files={files} onProcessingStart={() => setHasStartedProcessing(true)} />
+      <DocumentTransform
+        files={files}
+        onProcessingStart={() => setHasStartedProcessing(true)}
+      />
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

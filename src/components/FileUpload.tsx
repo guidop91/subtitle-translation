@@ -1,26 +1,26 @@
 import { useState } from 'react';
 
 interface FileUploadPropsBase {
-  accept?: string
-  id?: string
-  icon?: string
-  hint?: string
-  shouldCollapse?: boolean
+  accept?: string;
+  id?: string;
+  icon?: string;
+  hint?: string;
+  shouldCollapse?: boolean;
 }
 
 interface FileUploadPropsSingle extends FileUploadPropsBase {
-  multiple: false
-  value: File | null
-  onChange: (file: File | null) => void
+  multiple: false;
+  value: File | null;
+  onChange: (file: File | null) => void;
 }
 
 interface FileUploadPropsMultiple extends FileUploadPropsBase {
-  multiple: true
-  value: File[] | null
-  onChange: (files: File[]) => void
+  multiple: true;
+  value: File[] | null;
+  onChange: (files: File[]) => void;
 }
 
-type FileUploadProps = FileUploadPropsSingle | FileUploadPropsMultiple
+type FileUploadProps = FileUploadPropsSingle | FileUploadPropsMultiple;
 
 function FileUpload({
   value,
@@ -30,66 +30,68 @@ function FileUpload({
   id = 'file-upload',
   icon = '📁',
   hint,
-  shouldCollapse = false
+  shouldCollapse = false,
 }: FileUploadProps) {
-  const [dragActive, setDragActive] = useState(false)
+  const [dragActive, setDragActive] = useState(false);
 
   const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
     }
-  }
+  };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       if (multiple) {
-        const droppedFiles = Array.from(e.dataTransfer.files)
-        onChange(droppedFiles)
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        onChange(droppedFiles);
       } else {
-        onChange(e.dataTransfer.files[0])
+        onChange(e.dataTransfer.files[0]);
       }
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (e.target.files && e.target.files.length > 0) {
       if (multiple) {
-        const selectedFiles = Array.from(e.target.files)
-        onChange(selectedFiles)
+        const selectedFiles = Array.from(e.target.files);
+        onChange(selectedFiles);
       } else {
-        onChange(e.target.files[0])
+        onChange(e.target.files[0]);
       }
     }
-  }
+  };
 
   // Determine label text based on mode and selection
   const getLabelText = () => {
     if (multiple) {
-      const files = value as File[] | null
+      const files = value as File[] | null;
       if (files && files.length > 0) {
-        return `${files.length} archivo${files.length > 1 ? 's' : ''} seleccionado${files.length > 1 ? 's' : ''}`
+        return `${files.length} archivo${files.length > 1 ? 's' : ''} seleccionado${files.length > 1 ? 's' : ''}`;
       }
-      return 'Arrastra tus archivos aquí o haz clic para seleccionar'
+      return 'Arrastra tus archivos aquí o haz clic para seleccionar';
     } else {
-      const file = value as File | null
+      const file = value as File | null;
       if (file) {
-        return file.name
+        return file.name;
       }
-      return 'Arrastra tu archivo aquí o haz clic para seleccionar'
+      return 'Arrastra tu archivo aquí o haz clic para seleccionar';
     }
-  }
+  };
 
   return (
-    <div className={`file-upload-wrapper ${shouldCollapse ? 'collapsing' : ''}`}>
+    <div
+      className={`file-upload-wrapper ${shouldCollapse ? 'collapsing' : ''}`}
+    >
       <div
         className={`file-upload ${dragActive ? 'drag-active' : ''}`}
         onDragEnter={handleDrag}
@@ -115,7 +117,9 @@ function FileUpload({
       {/* File info display - single file */}
       {!multiple && value && (
         <div className={`file-info ${shouldCollapse ? 'collapsing' : ''}`}>
-          <p><strong>Archivo seleccionado:</strong> {(value as File).name}</p>
+          <p>
+            <strong>Archivo seleccionado:</strong> {(value as File).name}
+          </p>
           <p>Tamaño: {((value as File).size / 1024).toFixed(2)} KB</p>
         </div>
       )}
@@ -126,7 +130,11 @@ function FileUpload({
           <h3>Archivos seleccionados:</h3>
           {(value as File[]).map((file, index) => (
             <div key={index} className="file-item">
-              <p><strong>{index + 1}. {file.name}</strong></p>
+              <p>
+                <strong>
+                  {index + 1}. {file.name}
+                </strong>
+              </p>
               <p>Tamaño: {(file.size / 1024).toFixed(2)} KB</p>
             </div>
           ))}

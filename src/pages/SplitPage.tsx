@@ -1,49 +1,54 @@
-import { useState } from 'react'
-import { toast } from 'react-toastify'
-import FileUpload from '../components/FileUpload'
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import FileUpload from '../components/FileUpload';
 
 function SplitPage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [hasStartedSplitting, setHasStartedSplitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
+  const [file, setFile] = useState<File | null>(null);
+  const [hasStartedSplitting, setHasStartedSplitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   const splitFile = async () => {
-    if (!file) return
+    if (!file) return;
 
-    setHasStartedSplitting(true)
-    setError(null)
+    setHasStartedSplitting(true);
+    setError(null);
 
     try {
-      const formData = new FormData()
-      formData.append('document', file)
+      const formData = new FormData();
+      formData.append('document', file);
 
       const response = await fetch('http://localhost:3001/api/split-document', {
         method: 'POST',
-        body: formData
-      })
+        body: formData,
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to split document')
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to split document');
       }
 
       // The response is now a ZIP file
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      setDownloadUrl(url)
-      toast.success('¡Documento dividido exitosamente!')
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setDownloadUrl(url);
+      toast.success('¡Documento dividido exitosamente!');
     } catch (err) {
-      console.error('Error splitting file:', err)
-      setError(err instanceof Error ? err.message : 'Unknown error occurred')
-      toast.error(err instanceof Error ? err.message : 'Error al dividir el documento')
+      console.error('Error splitting file:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      toast.error(
+        err instanceof Error ? err.message : 'Error al dividir el documento'
+      );
     }
-  }
+  };
 
   return (
     <div className="app-container">
       <h1>Dividir DOCX en múltiples archivos</h1>
-      <p className="page-description">Sube un documento DOCX agregado para recuperarlo en sus archivos originales</p>
+      <p className="page-description">
+        Sube un documento DOCX agregado para recuperarlo en sus archivos
+        originales
+      </p>
 
       <FileUpload
         value={file}
@@ -58,9 +63,7 @@ function SplitPage() {
 
       {file && !hasStartedSplitting && (
         <div>
-          <button onClick={splitFile}>
-            Dividir documento
-          </button>
+          <button onClick={splitFile}>Dividir documento</button>
         </div>
       )}
 
@@ -73,11 +76,9 @@ function SplitPage() {
         </div>
       )}
 
-      {error && (
-        <p className="error-message">Error: {error}</p>
-      )}
+      {error && <p className="error-message">Error: {error}</p>}
     </div>
-  )
+  );
 }
 
-export default SplitPage
+export default SplitPage;

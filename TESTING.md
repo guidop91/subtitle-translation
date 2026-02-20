@@ -5,6 +5,7 @@ This project uses **Vitest** as the testing framework for both frontend and back
 ## Installation
 
 All testing dependencies are already installed:
+
 - `vitest` - Test runner
 - `@testing-library/react` - React component testing
 - `@testing-library/jest-dom` - Custom Jest matchers
@@ -54,69 +55,69 @@ subtitle-translation/
 ### Frontend (React Components)
 
 ```tsx
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import MyComponent from './MyComponent'
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import MyComponent from './MyComponent';
 
 describe('MyComponent', () => {
   it('renders correctly', () => {
-    render(<MyComponent />)
-    expect(screen.getByText('Hello')).toBeInTheDocument()
-  })
+    render(<MyComponent />);
+    expect(screen.getByText('Hello')).toBeInTheDocument();
+  });
 
   it('handles user interaction', async () => {
-    const user = userEvent.setup()
-    const mockFn = vi.fn()
+    const user = userEvent.setup();
+    const mockFn = vi.fn();
 
-    render(<MyComponent onClick={mockFn} />)
+    render(<MyComponent onClick={mockFn} />);
 
-    await user.click(screen.getByRole('button'))
-    expect(mockFn).toHaveBeenCalled()
-  })
-})
+    await user.click(screen.getByRole('button'));
+    expect(mockFn).toHaveBeenCalled();
+  });
+});
 ```
 
 ### Backend (Express Routes)
 
 ```js
-import { describe, it, expect } from 'vitest'
-import request from 'supertest'
-import express from 'express'
-import myRouter from './myRouter.js'
+import { describe, it, expect } from 'vitest';
+import request from 'supertest';
+import express from 'express';
+import myRouter from './myRouter.js';
 
 describe('My Router', () => {
-  let app
+  let app;
 
   beforeEach(() => {
-    app = express()
-    app.use(express.json())
-    app.use(myRouter)
-  })
+    app = express();
+    app.use(express.json());
+    app.use(myRouter);
+  });
 
   it('returns success response', async () => {
     const response = await request(app)
       .post('/api/endpoint')
       .send({ data: 'test' })
-      .expect(200)
+      .expect(200);
 
-    expect(response.body.message).toBe('Success')
-  })
-})
+    expect(response.body.message).toBe('Success');
+  });
+});
 ```
 
 ### Utility Functions
 
 ```js
-import { describe, it, expect } from 'vitest'
-import { myUtil } from './myUtil.js'
+import { describe, it, expect } from 'vitest';
+import { myUtil } from './myUtil.js';
 
 describe('myUtil', () => {
   it('calculates correctly', () => {
-    const result = myUtil(2, 2)
-    expect(result).toBe(4)
-  })
-})
+    const result = myUtil(2, 2);
+    expect(result).toBe(4);
+  });
+});
 ```
 
 ## Available Matchers
@@ -125,44 +126,47 @@ With `@testing-library/jest-dom`, you get custom matchers:
 
 ```tsx
 // DOM presence
-expect(element).toBeInTheDocument()
-expect(element).not.toBeInTheDocument()
+expect(element).toBeInTheDocument();
+expect(element).not.toBeInTheDocument();
 
 // Visibility
-expect(element).toBeVisible()
-expect(element).toBeDisabled()
+expect(element).toBeVisible();
+expect(element).toBeDisabled();
 
 // Content
-expect(element).toHaveTextContent('Hello')
-expect(element).toHaveAttribute('href', '/home')
+expect(element).toHaveTextContent('Hello');
+expect(element).toHaveAttribute('href', '/home');
 
 // Form elements
-expect(input).toHaveValue('text')
-expect(checkbox).toBeChecked()
+expect(input).toHaveValue('text');
+expect(checkbox).toBeChecked();
 ```
 
 ## Best Practices
 
 1. **Test user behavior, not implementation**
+
    ```tsx
    // Good
-   expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
+   expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
 
    // Avoid
-   expect(container.querySelector('.submit-btn')).toBeInTheDocument()
+   expect(container.querySelector('.submit-btn')).toBeInTheDocument();
    ```
 
 2. **Use `await` for async operations**
+
    ```tsx
-   await user.click(button)
-   expect(await screen.findByText('Success')).toBeInTheDocument()
+   await user.click(button);
+   expect(await screen.findByText('Success')).toBeInTheDocument();
    ```
 
 3. **Mock external dependencies**
+
    ```tsx
    vi.mock('./api', () => ({
-     fetchData: vi.fn(() => Promise.resolve({ data: 'mock' }))
-   }))
+     fetchData: vi.fn(() => Promise.resolve({ data: 'mock' })),
+   }));
    ```
 
 4. **Clean up after tests**
@@ -198,11 +202,13 @@ npm run test:ui
 ## CI/CD Integration
 
 For CI pipelines:
+
 ```bash
 npm run test:run
 ```
 
 For coverage requirements:
+
 ```bash
 npm run test:coverage
 ```

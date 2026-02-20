@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-function DocumentTransform ({
+function DocumentTransform({
   files,
-  onProcessingStart
+  onProcessingStart,
 }: {
-  files: File[]
-  onProcessingStart?: () => void
+  files: File[];
+  onProcessingStart?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [translatedFiles, setTranslatedFiles] = useState<File[]>([]);
@@ -21,16 +21,18 @@ function DocumentTransform ({
 
     // Process each file sequentially
     for (const file of files) {
-
       try {
         const formData = new FormData();
         formData.append('document', file);
         formData.append('targetLang', 'ES');
 
-        const response = await fetch('http://localhost:3001/api/translate-document', {
-          method: 'POST',
-          body: formData
-        });
+        const response = await fetch(
+          'http://localhost:3001/api/translate-document',
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
 
         const resJson = await response.json();
         if (!response.ok) {
@@ -42,19 +44,23 @@ function DocumentTransform ({
         const fileResponse = await fetch(fullUrl);
 
         if (!fileResponse.ok) {
-          throw new Error(`Failed to download translated file for ${file.name}`);
+          throw new Error(
+            `Failed to download translated file for ${file.name}`
+          );
         }
 
         const content = await fileResponse.text();
 
         // Create translated file with "-translated" suffix
         const lastDotIndex = file.name.lastIndexOf('.');
-        const nameWithoutExt = lastDotIndex > 0 ? file.name.substring(0, lastDotIndex) : file.name;
-        const extension = lastDotIndex > 0 ? file.name.substring(lastDotIndex) : '';
+        const nameWithoutExt =
+          lastDotIndex > 0 ? file.name.substring(0, lastDotIndex) : file.name;
+        const extension =
+          lastDotIndex > 0 ? file.name.substring(lastDotIndex) : '';
         const translatedName = `${nameWithoutExt}-translated${extension}`;
 
         const translatedFile = new File([content], translatedName, {
-          type: 'text/plain'
+          type: 'text/plain',
         });
 
         results.push(translatedFile);
@@ -68,16 +74,16 @@ function DocumentTransform ({
     }
 
     setTranslatedFiles(results);
-    toast.success(`¡${results.length} archivo${results.length > 1 ? 's' : ''} traducido${results.length > 1 ? 's' : ''} exitosamente!`);
+    toast.success(
+      `¡${results.length} archivo${results.length > 1 ? 's' : ''} traducido${results.length > 1 ? 's' : ''} exitosamente!`
+    );
   };
 
   return (
     <>
       {files.length > 0 && !hasStartedTranslating && (
         <div>
-          <button onClick={translateDoc}>
-            Traducir archivos
-          </button>
+          <button onClick={translateDoc}>Traducir archivos</button>
         </div>
       )}
       {translatedFiles.length > 0 && (
@@ -95,11 +101,9 @@ function DocumentTransform ({
           })}
         </div>
       )}
-      {error && (
-        <p>Un error inesperado ocurrió: {error}</p>
-      )}
+      {error && <p>Un error inesperado ocurrió: {error}</p>}
     </>
-  )
+  );
 }
 
 export default DocumentTransform;
