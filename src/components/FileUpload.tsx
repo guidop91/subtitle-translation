@@ -23,13 +23,13 @@ interface FileUploadPropsMultiple extends FileUploadPropsBase {
 type FileUploadProps = FileUploadPropsSingle | FileUploadPropsMultiple;
 
 function FileUpload({
-  value,
-  onChange,
-  multiple,
-  accept = '.srt,.vtt,.sub,.ass,.txt',
-  id = 'file-upload',
-  icon = '📁',
   hint,
+  multiple,
+  onChange,
+  value,
+  accept = '.srt,.vtt,.sub,.ass,.txt',
+  icon = '📁',
+  id = 'file-upload',
   shouldCollapse = false,
 }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false);
