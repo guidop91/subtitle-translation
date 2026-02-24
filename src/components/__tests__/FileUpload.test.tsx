@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import FileUpload from '../FileUpload';
+import { useState } from 'react';
+
+function TestWrapper() {
+  const [file, setFile] = useState<File | null>(null);
+
+  return <FileUpload value={file} onChange={setFile} multiple={false} />;
+}
 
 describe('FileUpload', () => {
   describe('Single file mode', () => {
@@ -30,22 +37,29 @@ describe('FileUpload', () => {
       expect(screen.getByText(hintRegex)).toBeInTheDocument();
     });
 
-    it.only('allows upload by click event on component', () => {
-      const id = 'file-upload-input';
-      render(
-        <FileUpload
-          value={null}
-          onChange={mockOnChange}
-          multiple={false}
-          id={id}
-        />
-      );
-      // const input = screen.getByLabelText(/arrastra tu archivo aquí/i, {
-      //   selector: 'input',
-      // });
+    it('allows upload by click event on component', () => {
+      const { container } = render(<TestWrapper />);
 
-      // Now that we have the input targeted, fire a click event
-      // Figure out how to "upload" file
+      const input = container.querySelector('input[type="file"]')!;
+
+      const fileName = 'test-file.srt';
+      const mockFile = new File(['mock content'], fileName, {
+        type: 'text/plain',
+      });
+
+      Object.defineProperty(input, 'files', {
+        value: [mockFile],
+        writable: false,
+      });
+
+      fireEvent.change(input);
+
+      const filenameElements = screen.getAllByText(fileName);
+      const expectedSize = (mockFile.size / 1024).toFixed(2);
+      expect(filenameElements).toHaveLength(2);
+      expect(
+        screen.getByText(new RegExp(`tamaño:.*${expectedSize}`, 'i'))
+      ).toBeInTheDocument();
     });
   });
 
