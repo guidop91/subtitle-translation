@@ -20,7 +20,7 @@ interface FileUploadPropsMultiple extends FileUploadPropsBase {
   onChange: (files: File[]) => void;
 }
 
-type FileUploadProps = FileUploadPropsSingle | FileUploadPropsMultiple;
+export type FileUploadProps = FileUploadPropsSingle | FileUploadPropsMultiple;
 
 function FileUpload({
   hint,
@@ -39,7 +39,7 @@ function FileUpload({
     e.stopPropagation();
     if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else {
       setDragActive(false);
     }
   };
@@ -76,7 +76,7 @@ function FileUpload({
     if (multiple) {
       const files = value as File[] | null;
       if (files && files.length > 0) {
-        return `${files.length} archivo${files.length > 1 ? 's' : ''} seleccionado${files.length > 1 ? 's' : ''}`;
+        return `${files.length} archivos seleccionados`;
       }
       return 'Arrastra tus archivos aquí o haz clic para seleccionar';
     } else {
